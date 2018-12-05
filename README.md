@@ -16,7 +16,7 @@ This project is a Game Catalog website built using Flask, SQLAlchemy and Google 
 5. cd vagrant
 6. vagrant up (turn off the VM with 'vagrant halt')
 7. vagrant ssh (type 'exit' to log out)
-8. cd /vagrant/catalog
+8. cd catalog
 9. To setup the database, run ```python new_database_setup.py```
 10. To populate the database with sample values, run ```python populate_db.py```
 11. To see the website, run ```python web_app.py```
