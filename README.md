@@ -13,7 +13,7 @@ This project is a Game Catalog website built using Flask, SQLAlchemy and Google 
 2. Install [Vagrant](https://www.vagrantup.com/)
 3. Clone [this](https://github.com/Jasmin25/Project5) repository
 4. Open Terminal
-5. cd fullstack/vagrant
+5. cd vagrant
 6. vagrant up (turn off the VM with 'vagrant halt')
 7. vagrant ssh (type 'exit' to log out)
 8. cd /vagrant/catalog
