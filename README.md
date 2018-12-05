@@ -11,7 +11,7 @@ This project is a Game Catalog website built using Flask, SQLAlchemy and Google 
 ----
 1. Install [VirtualBox](https://www.virtualbox.org/)
 2. Install [Vagrant](https://www.vagrantup.com/)
-3. Clone [this](https://github.com/Jasmin25/fullstack-nanodegree-vm) repository
+3. Clone [this](https://github.com/Jasmin25/Project5) repository
 4. Open Terminal
 5. cd fullstack/vagrant
 6. vagrant up (turn off the VM with 'vagrant halt')
