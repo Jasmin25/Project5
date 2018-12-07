@@ -1,6 +1,6 @@
 # Item Catalog
 ----
-by Jasmin Shah, for the purpose of completing fourth lesson of :
+by Jasmin Shah, for the purpose of completing fifth lesson of :
 [Full-Stack Web Developer Nanodegree](https://www.udacity.com/course/nd004)
 
 # About This project
