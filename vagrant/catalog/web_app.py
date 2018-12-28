@@ -1,5 +1,13 @@
-from flask import Flask, render_template, request, url_for, redirect, flash
-from flask import jsonify, session as login_session
+from flask import (
+    Flask, 
+    render_template, 
+    request, 
+    url_for, 
+    redirect, 
+    flash,
+    jsonify, 
+    session as login_session
+)
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -66,6 +74,10 @@ def showLogin():
 # Gconnect function to login via Google
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """
+    Function that establishes connection with Google when
+    'Sign in using Google' button is selected.
+    """
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -157,6 +169,10 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """
+    This function revokes a current user's token and resets their
+    login_session.
+    """
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
@@ -185,41 +201,45 @@ def gdisconnect():
         return response
 
 """
-    Code for all API endpoints
+Code for all API endpoints
 """
-
-# Making an API endpoint - for all categories
 
 
 @app.route('/category/JSON')
 def categoryJSON():
+    """
+    Making an API endpoint - for all categories
+    """
     categories = session.query(Category).all()
     return jsonify(Game=[i.serialize for i in categories])
-
-# Making an API endpoint - for all games in a category
 
 
 @app.route('/category/<int:category_id>/game/JSON')
 def gamesInCategoryJSON(category_id):
+    """
+    Making an API endpoint - for all games in a category
+    """
     category = session.query(Category).filter_by(id=category_id).one()
     games = session.query(Game).filter_by(category_id=category.id).all()
     return jsonify(Game=[i.serialize for i in games])
 
-# Making an API endpoint - for details about a game
-
 
 @app.route('/category/<int:category_id>/game/<int:game_id>/JSON')
 def gameJSON(category_id, game_id):
+    """
+    Making an API endpoint - for details about a game
+    """
     oneGame = session.query(Game).filter_by(
         category_id=category_id, id=game_id).one()
     return jsonify(Game=oneGame.serialize)
-
-# Show all categories
 
 
 @app.route('/')
 @app.route('/category/')
 def showCategory():
+    """
+    This function shows all categories
+    """
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     categories = session.query(Category).all()
@@ -227,11 +247,12 @@ def showCategory():
         return render_template('publicCategory.html', categories=categories)
     return render_template('category.html', categories=categories)
 
-# Add new category
-
 
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
+    """
+    This function adds new category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
@@ -246,18 +267,22 @@ def newCategory():
     else:
         return render_template('newCategory.html')
 
-# Edit an existing category
-
 
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
+    """
+    This function edits an existing category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     editCategory = session.query(Category).filter_by(id=category_id).one()
     if editCategory.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorised to access this page. Please create your own category in order to edit');}</script><body onload='myFunction()''>"  # noqa
+        return "<script>function myFunction() "\
+               "{alert('You are not authorised to access this page. " \
+               "Please create your own category in order to edit');} " \
+               "</script><body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['name']:
             editCategory.name = request.form['name']
@@ -269,18 +294,22 @@ def editCategory(category_id):
         return render_template('editCategory.html', category_id=category_id,
                                category=editCategory)
 
-# Delete an existing category
-
 
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    """
+    This function deletes an existing category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     deleteCategory = session.query(Category).filter_by(id=category_id).one()
     if deleteCategory.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorised to access this page. Please create your own category in order to delete');}</script><body onload='myFunction()''>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorised to access this page. " \
+               "Please create your own category in order to delete');} " \
+               "</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(deleteCategory)
         session.commit()
@@ -291,10 +320,12 @@ def deleteCategory(category_id):
                                category=deleteCategory)
 
 
-# Show games in a category
 @app.route('/category/<int:category_id>/')
 @app.route('/category/<int:category_id>/game/')
 def showGames(category_id):
+    """
+    This function shows all the games in a category
+    """
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -308,18 +339,22 @@ def showGames(category_id):
         return render_template('game.html', category=category, games=games,
                                creator=creator)
 
-# Add game to a category
-
 
 @app.route('/category/<int:category_id>/game/new/', methods=['GET', 'POST'])
 def newGame(category_id):
+    """
+    This function adds a game to a category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to add games to this category. Please create your own category in order to add games.');}</script><body onload='myFunction()'>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorized to add games to this category." \
+               " Please create your own category in order to add games.');}" \
+               "</script><body onload='myFunction()'>"
     if request.method == 'POST':
         newGame = Game(name=request.form['name'],
                        description=request.form['description'],
@@ -332,19 +367,23 @@ def newGame(category_id):
     else:
         return render_template('newGame.html', category_id=category_id)
 
-# Edit a game in a category
-
 
 @app.route('/category/<int:category_id>/game/<int:game_id>/edit/',
            methods=['GET', 'POST'])
 def editGame(category_id, game_id):
+    """
+    This function edits a game in a category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     editGame = session.query(Game).filter_by(id=game_id).one()
     if editGame.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorised to access this page. Please create your game in order to edit');}</script><body onload='myFunction()''>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorised to access this page. " \
+               "Please create your game in order to edit');}</script>" \
+               "<body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['name']:
             editGame.name = request.form['name']
@@ -360,19 +399,23 @@ def editGame(category_id, game_id):
         return render_template('editGame.html', category_id=category_id,
                                game=editGame)
 
-# Delete game from a category
-
 
 @app.route('/category/<int:category_id>/game/<int:game_id>/delete/',
            methods=['GET', 'POST'])
 def deleteGame(category_id, game_id):
+    """
+    This function deletes a game from a category
+    """
     if 'username' not in login_session:
         return redirect('/login')
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     delGame = session.query(Game).filter_by(id=game_id).one()
     if delGame.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorised to access this page. Please create your game in order to delete');}</script><body onload='myFunction()''>"  # noqa
+        return "<script>function myFunction() " \
+               "{alert('You are not authorised to access this page. " \
+               "Please create your game in order to delete');}</script>" \
+               "<body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(delGame)
         session.commit()
