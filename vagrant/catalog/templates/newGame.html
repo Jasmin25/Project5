@@ -14,15 +14,15 @@
 			<form action="#" method = "post">
 				<div class="form-group">
 					<label for="name">Name:</label>
-					<input type ="text" maxlength="50" class="form-control" name="name"placeholder="Name of the game">
+					<input type ="text" maxlength="50" class="form-control" name="name" placeholder="Name of the game" required>
 
 					<label for="description">Description:</label>
-					<textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Description of the game"></textarea>
+					<textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Description of the game" required></textarea>
 
 					<label for="price">Price:</label>
 					<div class="input-group">
 						<div class="input-group-addon">$</div>
-						<input type ="text" class="form-control" maxlength="10" name="price" placeholder="Price in $">
+						<input type ="text" class="form-control" maxlength="10" name="price" placeholder="Price in $" required>
 					</div>
 					<button type="submit" class="btn btn-default" id="submit" type="submit">
 					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Create</button>
@@ -31,4 +31,3 @@
 		</div>
 	</div>
 {% endblock %}
-
